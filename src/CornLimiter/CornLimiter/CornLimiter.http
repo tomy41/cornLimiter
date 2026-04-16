@@ -1,0 +1,6 @@
+@CornLimiter_HostAddress = http://localhost:5104
+
+GET {{CornLimiter_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
