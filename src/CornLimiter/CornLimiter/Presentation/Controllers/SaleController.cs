@@ -2,10 +2,12 @@ using Asp.Versioning;
 using CornLimiter.Application.Commands;
 using CornLimiter.Application.Exceptions;
 using CornLimiter.Application.UseCases;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CornLimiter.Presentation.Controllers;
 
+[Authorize]
 [ApiVersion(1)]
 [ApiController]
 [Route("v{version:apiVersion}/[controller]")]

@@ -11,14 +11,19 @@ using Exceptionless;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
+
+
 
 // FluentValidation
 builder.Services.AddFluentValidationAutoValidation();
@@ -32,11 +37,11 @@ builder.Services.AddLogging(b => {
     b.AddExceptionless();
 });
 
-// Bind CornLimiter options
+// Bind options
 builder.Services.Configure<CornLimiterOptions>(builder.Configuration.GetSection("CornLimiter"));
-
-// Bind Exceptionless options (disponible vía IOptions<ExceptionlessOptions>)
 builder.Services.Configure<ExceptionlessOptions>(builder.Configuration.GetSection("Exceptionless"));
+builder.Services.Configure<JwtTokenOptions>(builder.Configuration.GetSection("Jwt"));
+
 
 // Configure MySQL DbContext (usa ConnectionStrings:DefaultConnection)
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -71,6 +76,19 @@ builder.Services.AddSwaggerGen(c =>
         Version = "v1",
         Description = "Documentación OpenAPI para CornLimiter"
     });
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter 'Bearer' [space] and then your valid token."
+    });
+    c.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+    {
+        [new OpenApiSecuritySchemeReference("Bearer", document)] = []
+    });
 });
 
 builder.Services
@@ -93,6 +111,33 @@ builder.Services.AddApiVersioning(options =>
     options.GroupNameFormat = "'v'V";
     options.SubstituteApiVersionInUrl = true;
 });
+
+// Configurar autenticación JWT 
+var jwtSection = builder.Configuration.GetSection("Jwt");
+var jwtTokenOptions = jwtSection.Get<JwtTokenOptions>();
+
+if (jwtTokenOptions != null)
+{
+    builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    }).AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtTokenOptions.Issuer,
+            ValidAudience = jwtTokenOptions.Audience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtTokenOptions.Key))
+        };
+    });
+}
+
+
 
 var app = builder.Build();
 
@@ -129,6 +174,7 @@ app.MapHealthChecks("/healthcheck", new HealthCheckOptions()
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
