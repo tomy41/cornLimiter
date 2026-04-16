@@ -2,17 +2,17 @@ using CornLimiter.Application.UseCases;
 using CornLimiter.Application.Validators;
 using CornLimiter.Configuration;
 using CornLimiter.Domain;
+using CornLimiter.Domain.MapProfiles;
 using CornLimiter.Infrastructure.Data;
 using CornLimiter.Infrastructure.Data.Repositories;
-using CornLimiter.Middleware;
+using CornLimiter.Presentation.Middleware;
+using Exceptionless;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
-using Exceptionless;
 using Microsoft.OpenApi;
-using CornLimiter.Domain.MapProfiles;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -85,7 +85,6 @@ builder.Services.AddAutoMapper(cfg => { }, typeof(SaleMapProfile));
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 
 // Habilitar Swagger y SwaggerUI en desarrollo
 if (app.Environment.IsDevelopment())
@@ -98,10 +97,12 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-// Registrar middlewares
+
+// Configure the HTTP request pipeline.
+app.UseMiddleware<ExceptionsMiddleware>();
 app.UseMiddleware<LoggerMiddleware>();
-app.UseMiddleware<ExceptionlessMiddleware>();
-    
+app.UseMiddleware<MetricsMiddleware>();
+
 
 // Registrar middleware que reporta excepciones a Exceptionless (opcional si AddExceptionless fue registrado)
 if (!string.IsNullOrWhiteSpace(exceptionlessOptions?.ApiKey))

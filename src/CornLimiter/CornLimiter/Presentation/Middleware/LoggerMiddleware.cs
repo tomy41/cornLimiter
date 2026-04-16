@@ -1,22 +1,9 @@
-using Exceptionless;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Diagnostics;
-using System.Threading.Tasks;
+namespace CornLimiter.Presentation.Middleware;
 
-namespace CornLimiter.Middleware;
-
-public class LoggerMiddleware
+public class LoggerMiddleware(RequestDelegate next, ILogger<LoggerMiddleware> logger)
 {
-    private readonly RequestDelegate _next;
-    private readonly ILogger<LoggerMiddleware> _logger;
-
-    public LoggerMiddleware(RequestDelegate next, ILogger<LoggerMiddleware> logger)
-    {
-        _next = next ?? throw new ArgumentNullException(nameof(next));
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-    }
+    private readonly RequestDelegate _next = next ?? throw new ArgumentNullException(nameof(next));
+    private readonly ILogger<LoggerMiddleware> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
     public async Task InvokeAsync(HttpContext context)
     {
@@ -34,15 +21,10 @@ public class LoggerMiddleware
             return Task.CompletedTask;
         });
 
-        var sw = Stopwatch.StartNew();
-        _logger.LogInformation("Request started: {Method} {Path} - CorrelationId:{CorrelationId}",
+        _logger.LogInformation("Request: {Method} {Path} - CorrelationId:{CorrelationId}",
             context.Request.Method, context.Request.Path, correlationId);
 
         await _next(context);
-
-        sw.Stop();
-        _logger.LogInformation("Request finished: {Method} {Path} - Status:{StatusCode} - Elapsed:{Elapsed}ms - CorrelationId:{CorrelationId}",
-            context.Request.Method, context.Request.Path, context.Response.StatusCode, sw.ElapsedMilliseconds, correlationId);
 
     }
 }

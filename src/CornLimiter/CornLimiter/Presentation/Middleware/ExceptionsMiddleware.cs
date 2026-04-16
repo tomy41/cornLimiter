@@ -1,17 +1,13 @@
-using System;
-using System.Threading.Tasks;
 using Exceptionless;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 
-namespace CornLimiter.Middleware;
+namespace CornLimiter.Presentation.Middleware;
 
-public class ExceptionlessMiddleware
+public class ExceptionsMiddleware
 {
     private readonly RequestDelegate _next;
-    private readonly ILogger<ExceptionlessMiddleware> _logger;
+    private readonly ILogger<ExceptionsMiddleware> _logger;
 
-    public ExceptionlessMiddleware(RequestDelegate next, ILogger<ExceptionlessMiddleware> logger)
+    public ExceptionsMiddleware(RequestDelegate next, ILogger<ExceptionsMiddleware> logger)
     {
         _next = next ?? throw new ArgumentNullException(nameof(next));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
