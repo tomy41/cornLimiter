@@ -3,5 +3,5 @@
 public class SaleDto
 {
     public int Id { get; set; }
-    public Guid FarmerCode { get; set; }
+    public DateTime SoldOnUtc { get; set; }
 }
