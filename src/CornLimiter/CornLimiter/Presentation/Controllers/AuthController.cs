@@ -6,42 +6,41 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace CornLimiter.Presentation.Controllers
+namespace CornLimiter.Presentation.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class AuthController(IOptions<JwtTokenOptions> options) : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class AuthController(IOptions<JwtTokenOptions> options) : ControllerBase
+    [HttpGet("Token")]
+    public IActionResult GetToken()
     {
-        [HttpGet("Token")]
-        public IActionResult GetToken()
+        var token = GenerateJwtToken();
+        return Ok(new
         {
-            var token = GenerateJwtToken();
-            return Ok(new
-            {
-                Token = token
-            });
-        }
+            Token = token
+        });
+    }
 
-        private string GenerateJwtToken()
+    private string GenerateJwtToken()
+    {
+        var claims = new[]
         {
-            var claims = new[]
-            {
-            new Claim(JwtRegisteredClaimNames.Sub, "fakeUser"),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim(ClaimTypes.Role, "Admin")
-        };
+        new Claim(JwtRegisteredClaimNames.Sub, "fakeUser"),
+        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+        new Claim(ClaimTypes.Role, "Admin")
+    };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(options.Value.Key));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(options.Value.Key));
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var token = new JwtSecurityToken(
-                issuer: options.Value.Issuer,
-                audience: options.Value.Audience,
-                claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(options.Value.ExpiryMinutes),
-                signingCredentials: creds);
+        var token = new JwtSecurityToken(
+            issuer: options.Value.Issuer,
+            audience: options.Value.Audience,
+            claims: claims,
+            expires: DateTime.UtcNow.AddMinutes(options.Value.ExpiryMinutes),
+            signingCredentials: creds);
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
+        return new JwtSecurityTokenHandler().WriteToken(token);
     }
 }

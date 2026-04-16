@@ -1,4 +1,5 @@
 using Asp.Versioning;
+using CornLimiter.Application.Service;
 using CornLimiter.Application.UseCases;
 using CornLimiter.Application.Validators;
 using CornLimiter.Configuration;
@@ -11,6 +12,9 @@ using Exceptionless;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using HealthChecks.UI.Client;
+using LaunchDarkly.Observability;
+using LaunchDarkly.Sdk.Server;
+using LaunchDarkly.Sdk.Server.Integrations;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
@@ -28,6 +32,7 @@ builder.Services.AddEndpointsApiExplorer();
 ConfigureValidators(builder);
 ConfigureLogging(builder);
 ConfigureOptions(builder);
+ConfigureFeaturesManager(builder);
 ConfigureDbContext(builder);
 ConfigureRepositories(builder);
 ConfigureUseCases(builder);
@@ -92,6 +97,7 @@ static void ConfigureOptions(WebApplicationBuilder builder)
     builder.Services.Configure<CornLimiterOptions>(builder.Configuration.GetSection("CornLimiter"));
     builder.Services.Configure<ExceptionlessOptions>(builder.Configuration.GetSection("Exceptionless"));
     builder.Services.Configure<JwtTokenOptions>(builder.Configuration.GetSection("Jwt"));
+    builder.Services.Configure<LaunchDarklyOptions>(builder.Configuration.GetSection("LaunchDarkly"));
 }
 
 static void ConfigureDbContext(WebApplicationBuilder builder)
@@ -214,4 +220,23 @@ static void ConfigureRepositories(WebApplicationBuilder builder)
 static void ConfigureUseCases(WebApplicationBuilder builder)
 {
     builder.Services.AddScoped<SellOneUseCase>();
+}
+
+static void ConfigureFeaturesManager(WebApplicationBuilder builder)
+{
+    var launchDarklySection = builder.Configuration.GetSection("LaunchDarkly");
+    var launchDarklyOptions = launchDarklySection.Get<LaunchDarklyOptions>();
+
+    var config = Configuration.Builder(launchDarklyOptions!.SdkKey)
+      .StartWaitTime(TimeSpan.FromSeconds(5))
+      .Plugins(new PluginConfigurationBuilder()
+          .Add(ObservabilityPlugin.Builder(builder.Services)
+              .WithServiceName("corn_limiter")
+              .WithServiceVersion("123")
+              .Build()
+          )
+      ).Build();
+    var client = new LdClient(config);
+
+    builder.Services.AddSingleton<IFeatureFlagsService>(sp => new FeatureFlagService(client));
 }
