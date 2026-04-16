@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using CornLimiter.Application.Commands;
 using CornLimiter.Application.Exceptions;
 using CornLimiter.Application.UseCases;
@@ -5,8 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CornLimiter.Presentation.Controllers;
 
+[ApiVersion(1)]
 [ApiController]
-[Route("[controller]")]
+[Route("v{version:apiVersion}/[controller]")]
 public class SaleController : ControllerBase
 {
     private readonly SellOneUseCase _sellOneUseCase;
@@ -20,6 +22,7 @@ public class SaleController : ControllerBase
     /// Sells one unit for the specified farmer.
     /// Receives a GUID named farmerCode in the request body.
     /// </summary>
+    [MapToApiVersion(1)]
     [HttpPost("SellOne")]
     public async Task<IActionResult> SellOne(SellOneCommand command)
     {

@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using CornLimiter.Application.UseCases;
 using CornLimiter.Application.Validators;
 using CornLimiter.Configuration;
@@ -82,6 +83,20 @@ builder.Services
 
 
 builder.Services.AddAutoMapper(cfg => { }, typeof(SaleMapProfile));
+
+builder.Services.AddApiVersioning(options =>
+{
+    options.DefaultApiVersion = new ApiVersion(1);
+    options.ReportApiVersions = true;
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ApiVersionReader = new UrlSegmentApiVersionReader();
+})
+.AddMvc() // This is needed for controllers
+.AddApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'V";
+    options.SubstituteApiVersionInUrl = true;
+});
 
 var app = builder.Build();
 
