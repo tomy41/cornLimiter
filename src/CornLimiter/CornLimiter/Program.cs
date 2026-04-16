@@ -46,11 +46,11 @@ if (!string.IsNullOrWhiteSpace(connectionString))
         options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 }
 
-builder.Services.AddScoped<IUnitOfWork>(c => c.GetRequiredService<MySqlDbContext>());
 
 // Registrar repositorios y casos de uso (inyección por interfaz)
 builder.Services.AddScoped<ISaleRepository, SaleRepository>();
 builder.Services.AddScoped<SellOneUseCase>();
+builder.Services.AddScoped<IUnitOfWork>(c => c.GetRequiredService<MySqlDbContext>());
 
 // Leer las opciones bindeadas para registrar Exceptionless (la sección ya está vinculada a IOptions)
 var exceptionlessSection = builder.Configuration.GetSection("Exceptionless");
@@ -76,10 +76,6 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services
     .AddHealthChecks()
     .AddMySql(connectionString!);
-
-builder.Services
-    .AddHealthChecksUI()
-    .AddInMemoryStorage();
 
 
 builder.Services.AddAutoMapper(cfg => { }, typeof(SaleMapProfile));
@@ -122,18 +118,13 @@ app.UseMiddleware<MetricsMiddleware>();
 // Registrar middleware que reporta excepciones a Exceptionless (opcional si AddExceptionless fue registrado)
 if (!string.IsNullOrWhiteSpace(exceptionlessOptions?.ApiKey))
 {
-    app.UseExceptionless(); 
+    app.UseExceptionless();
 }
 
-app.MapHealthChecks("/api/health", new HealthCheckOptions()
+app.MapHealthChecks("/healthcheck", new HealthCheckOptions()
 {
     Predicate = _ => true,
     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-});
-
-app.UseHealthChecksUI(options =>
-{
-    options.UIPath = "/healthcheck-ui";
 });
 
 app.UseHttpsRedirection();

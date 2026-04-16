@@ -21,7 +21,8 @@
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "Exceptionless__ApiKey": "2cDQLvtmWB49C0cGvO3FJ7f5rAUc6cfxRuJqzZcL"
+        "Exceptionless__ApiKey": "2cDQLvtmWB49C0cGvO3FJ7f5rAUc6cfxRuJqzZcL",
+        "ConnectionStrings__DefaultConnection": "server=localhost;port=3306;database=cornlimiter;user=root;password=root;"
       }
     }
   },
