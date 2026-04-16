@@ -1,4 +1,6 @@
 using Exceptionless;
+using System.Net;
+using System.Text.Json;
 
 namespace CornLimiter.Presentation.Middleware;
 
@@ -33,7 +35,21 @@ public class ExceptionsMiddleware
             {
                 _logger.LogWarning(sendEx, "Failed to report exception to Exceptionless.");
             }
-            throw;
+
+            await HandleExceptionAsync(context, ex);
         }
+    }
+
+    private static Task HandleExceptionAsync(HttpContext context, Exception exception)
+    {
+        context.Response.ContentType = "application/json";
+        context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+
+        var result = JsonSerializer.Serialize(new
+        {
+            error = "Internal Server Error",
+            detail = "An unexpected error occurred. Please try again later."
+        });
+        return context.Response.WriteAsync(result);
     }
 }

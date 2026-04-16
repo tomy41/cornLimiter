@@ -10,14 +10,16 @@ namespace CornLimiter.Presentation.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController( IOptions<JwtTokenOptions> options) : ControllerBase
+    public class AuthController(IOptions<JwtTokenOptions> options) : ControllerBase
     {
         [HttpGet("Token")]
         public IActionResult GetToken()
         {
             var token = GenerateJwtToken();
-
-            return Ok(new { Token = token });
+            return Ok(new
+            {
+                Token = token
+            });
         }
 
         private string GenerateJwtToken()
