@@ -8,39 +8,38 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace CornLimiter.Infrastructure.Data.Migrations
+namespace CornLimiter.Infrastructure.Data.Migrations;
+
+[DbContext(typeof(MySqlDbContext))]
+partial class MySqlDbContextModelSnapshot : ModelSnapshot
 {
-    [DbContext(typeof(MySqlDbContext))]
-    partial class MySqlDbContextModelSnapshot : ModelSnapshot
+    protected override void BuildModel(ModelBuilder modelBuilder)
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
-        {
 #pragma warning disable 612, 618
-            modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.0")
-                .HasAnnotation("Relational:MaxIdentifierLength", 64);
+        modelBuilder
+            .HasAnnotation("ProductVersion", "9.0.0")
+            .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
+        MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("CornLimiter.Domain.Models.Sale", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+        modelBuilder.Entity("CornLimiter.Domain.Models.Sale", b =>
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<Guid>("FarmerCode")
-                        .HasColumnType("char(36)");
+                b.Property<Guid>("FarmerCode")
+                    .HasColumnType("char(36)");
 
-                    b.Property<DateTime>("SoldOnUtc")
-                        .HasColumnType("datetime(6)");
+                b.Property<DateTime>("SoldOnUtc")
+                    .HasColumnType("datetime(6)");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.ToTable("Sale", (string)null);
-                });
+                b.ToTable("Sale", (string)null);
+            });
 #pragma warning restore 612, 618
-        }
     }
 }

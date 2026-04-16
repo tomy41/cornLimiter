@@ -1,7 +1,6 @@
-﻿namespace CornLimiter.Configuration
+﻿namespace CornLimiter.Configuration;
+
+public class LaunchDarklyOptions
 {
-    public class LaunchDarklyOptions
-    {
-        public required string SdkKey { get; set; }
-    }
+    public required string SdkKey { get; set; }
 }

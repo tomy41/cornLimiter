@@ -1,7 +1,6 @@
-﻿namespace CornLimiter.Application.Commands
+﻿namespace CornLimiter.Application.Commands;
+
+public class SellOneCommand
 {
-    public class SellOneCommand
-    {
-        public Guid FarmerCode { get; set; }
-    }
+    public Guid FarmerCode { get; set; }
 }

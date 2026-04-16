@@ -1,7 +1,6 @@
-﻿namespace CornLimiter.Domain
+﻿namespace CornLimiter.Domain;
+
+public interface IFeatureFlagsService
 {
-    public interface IFeatureFlagsService
-    {
-        bool IsFeatureFlagEnabled(string flagKey);
-    }
+    bool IsFeatureFlagEnabled(string flagKey);
 }

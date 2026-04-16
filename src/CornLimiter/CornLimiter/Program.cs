@@ -220,8 +220,8 @@ static void ConfigureRepositories(WebApplicationBuilder builder)
 
 static void ConfigureUseCases(WebApplicationBuilder builder)
 {
-    builder.Services.AddScoped<SellOneUseCase>();
-    builder.Services.AddScoped<ListSellingsByFarmerUseCase>();
+    builder.Services.AddScoped<ISellOneUseCase, SellOneUseCase>();
+    builder.Services.AddScoped<IListSellingsByFarmerUseCase, ListSellingsByFarmerUseCase>();
 }
 
 static void ConfigureFeaturesManager(WebApplicationBuilder builder)

@@ -3,3 +3,7 @@ src/CornLimiter/CornLimiter/bin/
 src/CornLimiter/CornLimiter/obj/
 src/CornLimiter/CornLimiter/CornLimiter.csproj.user
 src/CornLimiter/CornLimiter/Properties/launchSettings.json
+.codetesting/
+src/CornLimiter/CornLmiterTests/bin/
+src/CornLimiter/CornLmiterTests/obj/
+*.coverage

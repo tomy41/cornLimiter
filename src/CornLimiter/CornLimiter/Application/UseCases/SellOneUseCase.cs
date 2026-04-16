@@ -6,35 +6,24 @@ using CornLimiter.Domain;
 using CornLimiter.Domain.Models;
 using CornLimiter.Domain.ValueObjects;
 using CornLimiter.Infrastructure.Data;
-using CornLimiter.Infrastructure.Service;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 
 namespace CornLimiter.Application.UseCases;
 
-public class SellOneUseCase
-{
-
-    private bool _cacheBoostEnabled = true;
-    private readonly IMemoryCache _memoryCache;
-    private readonly ISaleRepository _repository;
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IMapper _mapper;
-    private readonly IOptions<CornLimiterOptions> _options;
-    public SellOneUseCase(IMemoryCache memoryCache,
+public class SellOneUseCase(IMemoryCache memoryCache,
     ISaleRepository repository,
     IUnitOfWork unitOfWork,
     IMapper mapper,
     IOptions<CornLimiterOptions> options,
-    IFeatureFlagsService featureFlagsService)
-    {
-        _memoryCache = memoryCache;
-        _repository = repository;
-        _unitOfWork = unitOfWork;
-        _mapper = mapper;
-        _options = options;
-        _cacheBoostEnabled = featureFlagsService.IsFeatureFlagEnabled("cacheBoostEnabledFeatureFlag");
-    }
+    IFeatureFlagsService featureFlagsService) : ISellOneUseCase
+{
+    private readonly bool _cacheBoostEnabled = featureFlagsService?.IsFeatureFlagEnabled("cacheBoostEnabledFeatureFlag") ?? throw new ArgumentNullException(nameof(featureFlagsService));
+    private readonly IMemoryCache _memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
+    private readonly ISaleRepository _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+    private readonly IUnitOfWork _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+    private readonly IMapper _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+    private readonly IOptions<CornLimiterOptions> _options = options ?? throw new ArgumentNullException(nameof(options));
 
     public async Task<SaleDto> ExecuteAsync(SellOneCommand command, CancellationToken cancellationToken = default)
     {

@@ -1,10 +1,9 @@
-﻿namespace CornLimiter.Configuration
+﻿namespace CornLimiter.Configuration;
+
+public class JwtTokenOptions
 {
-    public class JwtTokenOptions
-    {
-        public required string Key { get; set; }
-        public required string Issuer { get; set; }
-        public required string Audience { get; set; }
-        public required int ExpiryMinutes { get; set; }
-    }
+    public required string Key { get; set; }
+    public required string Issuer { get; set; }
+    public required string Audience { get; set; }
+    public required int ExpiryMinutes { get; set; }
 }

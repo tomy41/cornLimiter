@@ -13,13 +13,15 @@ namespace CornLimiter.Presentation.Controllers;
 [ApiVersion(1)]
 [ApiController]
 [Route("v{version:apiVersion}/[controller]")]
-public class SaleController(SellOneUseCase sellOneUseCase, 
-    ListSellingsByFarmerUseCase listSellingsByFarmerUseCase, 
-    SellOneCommandValidator sellOneCommandValidator, 
+public class SaleController(ISellOneUseCase sellOneUseCase,
+    IListSellingsByFarmerUseCase listSellingsByFarmerUseCase,
+    SellOneCommandValidator sellOneCommandValidator,
     SalesByFarmerQueryValidator salesByFarmerQueryValidator) : ControllerBase
 {
-    private readonly SellOneUseCase _sellOneUseCase = sellOneUseCase ?? throw new ArgumentNullException(nameof(sellOneUseCase));
-    private readonly ListSellingsByFarmerUseCase _listSellingsByFarmerUseCase = listSellingsByFarmerUseCase ?? throw new ArgumentNullException(nameof(listSellingsByFarmerUseCase));
+    private readonly ISellOneUseCase _sellOneUseCase = sellOneUseCase ?? throw new ArgumentNullException(nameof(sellOneUseCase));
+    private readonly IListSellingsByFarmerUseCase _listSellingsByFarmerUseCase = listSellingsByFarmerUseCase ?? throw new ArgumentNullException(nameof(listSellingsByFarmerUseCase));
+    private readonly SellOneCommandValidator _sellOneCommandValidator = sellOneCommandValidator ?? throw new ArgumentNullException(nameof(sellOneCommandValidator));
+    private readonly SalesByFarmerQueryValidator _salesByFarmerQueryValidator = salesByFarmerQueryValidator ?? throw new ArgumentNullException(nameof(salesByFarmerQueryValidator));
 
     [MapToApiVersion(1)]
     [HttpPost("SellOne")]
@@ -27,7 +29,7 @@ public class SaleController(SellOneUseCase sellOneUseCase,
     {
         try
         {
-            sellOneCommandValidator.ValidateAndThrow(command);
+            _sellOneCommandValidator.ValidateAndThrow(command);
             var sale = await _sellOneUseCase.ExecuteAsync(command);
 
             var result = new
@@ -52,7 +54,7 @@ public class SaleController(SellOneUseCase sellOneUseCase,
     public async Task<IActionResult> ListSalesByFarmerAsync(Guid farmerCode)
     {
         var query = new SalesByFarmerQuery { FarmerCode = farmerCode };
-        salesByFarmerQueryValidator.ValidateAndThrow(query);
+        _salesByFarmerQueryValidator.ValidateAndThrow(query);
 
         var sales = await _listSellingsByFarmerUseCase.ExecuteAsync(query);
 
@@ -60,7 +62,7 @@ public class SaleController(SellOneUseCase sellOneUseCase,
         {
             farmerCode,
             total = sales.Count(),
-            latest = sales.Max(x => x.SoldOnUtc),
+            latest = sales.Any() ? sales.Max(x => x.SoldOnUtc) : (DateTime?)null,
             sales
         };
 
