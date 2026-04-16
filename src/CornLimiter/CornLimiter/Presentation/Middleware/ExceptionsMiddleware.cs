@@ -1,4 +1,5 @@
 using Exceptionless;
+using FluentValidation;
 using System.Net;
 using System.Text.Json;
 
@@ -36,8 +37,24 @@ public class ExceptionsMiddleware
                 _logger.LogWarning(sendEx, "Failed to report exception to Exceptionless.");
             }
 
-            await HandleExceptionAsync(context, ex);
+            switch (ex)
+            {
+                case ValidationException:
+                    await HandleValidationExceptionAsync(context, ex);
+                    break;
+                default:
+                    await HandleExceptionAsync(context, ex);
+                    break;
+            }
+
         }
+    }
+
+    private static Task HandleValidationExceptionAsync(HttpContext context, Exception exception)
+    {
+        context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+        context.Response.ContentType = "text/plain";
+        return context.Response.WriteAsync($"Bad Request: {exception.Message}.");
     }
 
     private static Task HandleExceptionAsync(HttpContext context, Exception exception)

@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using CornLimiter.Application.Commands;
 using CornLimiter.Application.Exceptions;
-using CornLimiter.Application.Service;
 using CornLimiter.Configuration;
 using CornLimiter.Domain;
 using CornLimiter.Domain.Models;
 using CornLimiter.Domain.ValueObjects;
 using CornLimiter.Infrastructure.Data;
+using CornLimiter.Infrastructure.Service;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 

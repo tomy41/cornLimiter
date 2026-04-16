@@ -1,5 +1,4 @@
 using Asp.Versioning;
-using CornLimiter.Application.Service;
 using CornLimiter.Application.UseCases;
 using CornLimiter.Application.Validators;
 using CornLimiter.Configuration;
@@ -7,6 +6,7 @@ using CornLimiter.Domain;
 using CornLimiter.Domain.MapProfiles;
 using CornLimiter.Infrastructure.Data;
 using CornLimiter.Infrastructure.Data.Repositories;
+using CornLimiter.Infrastructure.Service;
 using CornLimiter.Presentation.Middleware;
 using Exceptionless;
 using FluentValidation;
@@ -90,6 +90,7 @@ static void ConfigureValidators(WebApplicationBuilder builder)
 {
      builder.Services.AddFluentValidationAutoValidation();
     builder.Services.AddValidatorsFromAssemblyContaining<SellOneCommandValidator>();
+    builder.Services.AddValidatorsFromAssemblyContaining<SalesByFarmerQueryValidator>();
 }
 
 static void ConfigureOptions(WebApplicationBuilder builder)
@@ -220,6 +221,7 @@ static void ConfigureRepositories(WebApplicationBuilder builder)
 static void ConfigureUseCases(WebApplicationBuilder builder)
 {
     builder.Services.AddScoped<SellOneUseCase>();
+    builder.Services.AddScoped<ListSellingsByFarmerUseCase>();
 }
 
 static void ConfigureFeaturesManager(WebApplicationBuilder builder)

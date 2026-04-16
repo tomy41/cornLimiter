@@ -19,6 +19,14 @@ public class SaleRepository(MySqlDbContext db) : ISaleRepository
         await _db.Sales.AddAsync(sale, cancellationToken);        
     }
 
+    public async Task<List<Sale>> ListByFarmerCodeAsync(Guid farmerCode, CancellationToken cancellationToken = default)
+    {
+        return await _db.Sales
+                    .Where(p => p.FarmerCode == farmerCode)
+                    .OrderByDescending(p => p.SoldOnUtc)
+                    .ToListAsync(cancellationToken);
+    }
+
     public async Task<Sale?> GetLastAsync(Guid farmerCode, CancellationToken cancellationToken = default)
     {
         return await _db.Sales
