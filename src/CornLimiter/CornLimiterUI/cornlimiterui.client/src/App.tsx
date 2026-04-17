@@ -1,26 +1,53 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 
-interface Forecast {
-    date: string;
-    temperatureC: number;
-    temperatureF: number;
-    summary: string;
-}
-
 interface Sale {
     id: number;
     soldOnUtc: string;
 }
+
 function App() {
     const [sales, setSales] = useState<Sale[]>();
     const [salesCount, setSalesCount] = useState<number>();
     const [latestSale, setLatestSale] = useState<string>();
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const farmerCode = '3fa85f64-5717-4562-b3fc-2c963f66afa6';
 
     useEffect(() => {
-        populateFarmerSellingsData('3fa85f64-5717-4562-b3fc-2c963f66afa6');
+        populateFarmerSellingsData(farmerCode);
     }, []);
-        
+
+    const handleBuyOne = async () => {
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            const response = await fetch('api/v1/Sale/SellOne', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    farmerCode: farmerCode
+                })
+            });
+
+            if (response.ok) {
+                await populateFarmerSellingsData(farmerCode);
+            } else if (response.status === 429) {
+                const errorMessage = await response.text();
+                setError(errorMessage || 'Rate limit exceeded. Please try again later.');
+            } else {
+                setError(`Error: ${response.status} - ${response.statusText}`);
+            }
+        } catch (err) {
+            setError('An error occurred while processing your request.');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     const salesContents = sales === undefined
         ? <p>Sales loading</p>
         : <div>
@@ -57,7 +84,21 @@ function App() {
 
     return (
         <div>
-            <h1 id="tableLabel">Farmers corn sales</h1>         
+            <h1 id="tableLabel">Farmers corn sales</h1>
+            <div style={{ marginBottom: '20px' }}>
+                <button 
+                    onClick={handleBuyOne} 
+                    disabled={isLoading}
+                    className="btn btn-primary"
+                >
+                    {isLoading ? 'Processing...' : 'Buy one'}
+                </button>
+                {error && (
+                    <div style={{ color: 'red', marginTop: '10px' }}>
+                        {error}
+                    </div>
+                )}
+            </div>
             {salesContents}
         </div>
     );
