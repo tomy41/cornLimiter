@@ -10,7 +10,7 @@ using Moq;
 namespace CornLmiterTests.Application.UseCases;
 
 /// <summary>
-/// Unit tests for the <see cref="ListSellingsByFarmerUseCase"/> class.
+/// Unit tests for the <see cref="ListSalesByFarmerUseCase"/> class.
 /// </summary>
 public class ListSellingsByFarmerUseCaseTests
 {
@@ -23,7 +23,7 @@ public class ListSellingsByFarmerUseCaseTests
         // Arrange
         var mockRepository = new Mock<ISaleRepository>();
         var mockMapper = new Mock<IMapper>();
-        var useCase = new ListSellingsByFarmerUseCase(mockRepository.Object, mockMapper.Object);
+        var useCase = new ListSalesByFarmerUseCase(mockRepository.Object, mockMapper.Object);
 
         // Act & Assert
         await Assert.ThrowsAsync<ArgumentNullException>(() =>
@@ -40,14 +40,14 @@ public class ListSellingsByFarmerUseCaseTests
         var mockRepository = new Mock<ISaleRepository>();
         var mockMapper = new Mock<IMapper>();
         var farmerCode = Guid.NewGuid();
-        var query = new SalesByFarmerQuery { FarmerCode = farmerCode };
+        var query = new ListSalesByFarmerQuery { FarmerCode = farmerCode };
         var emptySalesList = new List<Sale>();
 
         mockRepository
             .Setup(r => r.ListByFarmerCodeAsync(farmerCode, It.IsAny<CancellationToken>()))
             .ReturnsAsync(emptySalesList);
 
-        var useCase = new ListSellingsByFarmerUseCase(mockRepository.Object, mockMapper.Object);
+        var useCase = new ListSalesByFarmerUseCase(mockRepository.Object, mockMapper.Object);
 
         // Act
         var result = await useCase.ExecuteAsync(query, CancellationToken.None);
@@ -68,7 +68,7 @@ public class ListSellingsByFarmerUseCaseTests
         var mockRepository = new Mock<ISaleRepository>();
         var mockMapper = new Mock<IMapper>();
         var farmerCode = Guid.NewGuid();
-        var query = new SalesByFarmerQuery { FarmerCode = farmerCode };
+        var query = new ListSalesByFarmerQuery { FarmerCode = farmerCode };
 
         var sale = new Sale();
         var saleDto = new SaleDto { Id = 1, SoldOnUtc = DateTime.UtcNow };
@@ -82,7 +82,7 @@ public class ListSellingsByFarmerUseCaseTests
             .Setup(m => m.Map<SaleDto>(sale))
             .Returns(saleDto);
 
-        var useCase = new ListSellingsByFarmerUseCase(mockRepository.Object, mockMapper.Object);
+        var useCase = new ListSalesByFarmerUseCase(mockRepository.Object, mockMapper.Object);
 
         // Act
         var result = await useCase.ExecuteAsync(query, CancellationToken.None);
@@ -105,7 +105,7 @@ public class ListSellingsByFarmerUseCaseTests
         var mockRepository = new Mock<ISaleRepository>();
         var mockMapper = new Mock<IMapper>();
         var farmerCode = Guid.NewGuid();
-        var query = new SalesByFarmerQuery { FarmerCode = farmerCode };
+        var query = new ListSalesByFarmerQuery { FarmerCode = farmerCode };
 
         var sale1 = new Sale();
         var sale2 = new Sale();
@@ -123,7 +123,7 @@ public class ListSellingsByFarmerUseCaseTests
         mockMapper.Setup(m => m.Map<SaleDto>(sale2)).Returns(saleDto2);
         mockMapper.Setup(m => m.Map<SaleDto>(sale3)).Returns(saleDto3);
 
-        var useCase = new ListSellingsByFarmerUseCase(mockRepository.Object, mockMapper.Object);
+        var useCase = new ListSalesByFarmerUseCase(mockRepository.Object, mockMapper.Object);
 
         // Act
         var result = await useCase.ExecuteAsync(query, CancellationToken.None);
@@ -148,7 +148,7 @@ public class ListSellingsByFarmerUseCaseTests
         var mockRepository = new Mock<ISaleRepository>();
         var mockMapper = new Mock<IMapper>();
         var farmerCode = Guid.NewGuid();
-        var query = new SalesByFarmerQuery { FarmerCode = farmerCode };
+        var query = new ListSalesByFarmerQuery { FarmerCode = farmerCode };
         var cancellationToken = new CancellationToken(false);
         var salesList = new List<Sale>();
 
@@ -156,7 +156,7 @@ public class ListSellingsByFarmerUseCaseTests
             .Setup(r => r.ListByFarmerCodeAsync(farmerCode, cancellationToken))
             .ReturnsAsync(salesList);
 
-        var useCase = new ListSellingsByFarmerUseCase(mockRepository.Object, mockMapper.Object);
+        var useCase = new ListSalesByFarmerUseCase(mockRepository.Object, mockMapper.Object);
 
         // Act
         await useCase.ExecuteAsync(query, cancellationToken);
@@ -175,14 +175,14 @@ public class ListSellingsByFarmerUseCaseTests
         var mockRepository = new Mock<ISaleRepository>();
         var mockMapper = new Mock<IMapper>();
         var farmerCode = Guid.NewGuid();
-        var query = new SalesByFarmerQuery { FarmerCode = farmerCode };
+        var query = new ListSalesByFarmerQuery { FarmerCode = farmerCode };
         var salesList = new List<Sale>();
 
         mockRepository
             .Setup(r => r.ListByFarmerCodeAsync(farmerCode, It.IsAny<CancellationToken>()))
             .ReturnsAsync(salesList);
 
-        var useCase = new ListSellingsByFarmerUseCase(mockRepository.Object, mockMapper.Object);
+        var useCase = new ListSalesByFarmerUseCase(mockRepository.Object, mockMapper.Object);
 
         // Act
         await useCase.ExecuteAsync(query, CancellationToken.None);
@@ -201,14 +201,14 @@ public class ListSellingsByFarmerUseCaseTests
         var mockRepository = new Mock<ISaleRepository>();
         var mockMapper = new Mock<IMapper>();
         var emptyGuid = Guid.Empty;
-        var query = new SalesByFarmerQuery { FarmerCode = emptyGuid };
+        var query = new ListSalesByFarmerQuery { FarmerCode = emptyGuid };
         var salesList = new List<Sale>();
 
         mockRepository
             .Setup(r => r.ListByFarmerCodeAsync(emptyGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync(salesList);
 
-        var useCase = new ListSellingsByFarmerUseCase(mockRepository.Object, mockMapper.Object);
+        var useCase = new ListSalesByFarmerUseCase(mockRepository.Object, mockMapper.Object);
 
         // Act
         var result = await useCase.ExecuteAsync(query, CancellationToken.None);
@@ -229,14 +229,14 @@ public class ListSellingsByFarmerUseCaseTests
         var mockRepository = new Mock<ISaleRepository>();
         var mockMapper = new Mock<IMapper>();
         var farmerCode = Guid.NewGuid();
-        var query = new SalesByFarmerQuery { FarmerCode = farmerCode };
+        var query = new ListSalesByFarmerQuery { FarmerCode = farmerCode };
         var salesList = new List<Sale>();
 
         mockRepository
             .Setup(r => r.ListByFarmerCodeAsync(farmerCode, default))
             .ReturnsAsync(salesList);
 
-        var useCase = new ListSellingsByFarmerUseCase(mockRepository.Object, mockMapper.Object);
+        var useCase = new ListSalesByFarmerUseCase(mockRepository.Object, mockMapper.Object);
 
         // Act
         await useCase.ExecuteAsync(query);
@@ -256,7 +256,7 @@ public class ListSellingsByFarmerUseCaseTests
 
         // Act & Assert
         var exception = Assert.Throws<ArgumentNullException>(() =>
-            new ListSellingsByFarmerUseCase(null!, mockMapper.Object));
+            new ListSalesByFarmerUseCase(null!, mockMapper.Object));
         
         Assert.Equal("salesRepository", exception.ParamName);
     }
@@ -272,7 +272,7 @@ public class ListSellingsByFarmerUseCaseTests
 
         // Act & Assert
         var exception = Assert.Throws<ArgumentNullException>(() =>
-            new ListSellingsByFarmerUseCase(mockRepository.Object, null!));
+            new ListSalesByFarmerUseCase(mockRepository.Object, null!));
     
         Assert.Equal("mapper", exception.ParamName);
     }
@@ -288,7 +288,7 @@ public class ListSellingsByFarmerUseCaseTests
         var mockMapper = new Mock<IMapper>();
 
         // Act
-        var useCase = new ListSellingsByFarmerUseCase(mockRepository.Object, mockMapper.Object);
+        var useCase = new ListSalesByFarmerUseCase(mockRepository.Object, mockMapper.Object);
 
         // Assert
         Assert.NotNull(useCase);

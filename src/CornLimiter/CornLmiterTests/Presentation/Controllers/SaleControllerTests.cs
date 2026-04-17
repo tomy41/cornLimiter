@@ -17,19 +17,19 @@ namespace CornLmiterTests.Presentation.Controllers;
 public class SaleControllerTests
 {
     private readonly Mock<ISellOneUseCase> _mockSellOneUseCase;
-    private readonly Mock<IListSellingsByFarmerUseCase> _mockListSellingsByFarmerUseCase;
+    private readonly Mock<IListSalesByFarmerUseCase> _mockListSellingsByFarmerUseCase;
     private readonly SellOneCommandValidator _sellOneCommandValidator;
-    private readonly SalesByFarmerQueryValidator _salesByFarmerQueryValidator;
+    private readonly ListSalesByFarmerQueryValidator _salesByFarmerQueryValidator;
 
     public SaleControllerTests()
     {
         // Crear mocks de las interfaces
         _mockSellOneUseCase = new Mock<ISellOneUseCase>();
-        _mockListSellingsByFarmerUseCase = new Mock<IListSellingsByFarmerUseCase>();
+        _mockListSellingsByFarmerUseCase = new Mock<IListSalesByFarmerUseCase>();
 
         // Crear validadores
         _sellOneCommandValidator = new SellOneCommandValidator();
-        _salesByFarmerQueryValidator = new SalesByFarmerQueryValidator();
+        _salesByFarmerQueryValidator = new ListSalesByFarmerQueryValidator();
     }
 
     #region Constructor Tests
@@ -251,7 +251,7 @@ public class SaleControllerTests
         };
 
         _mockListSellingsByFarmerUseCase
-            .Setup(x => x.ExecuteAsync(It.IsAny<SalesByFarmerQuery>(), It.IsAny<CancellationToken>()))
+            .Setup(x => x.ExecuteAsync(It.IsAny<ListSalesByFarmerQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(sales);
 
         var controller = new SaleController(
@@ -285,7 +285,7 @@ public class SaleControllerTests
         };
 
         _mockListSellingsByFarmerUseCase
-            .Setup(x => x.ExecuteAsync(It.IsAny<SalesByFarmerQuery>(), It.IsAny<CancellationToken>()))
+            .Setup(x => x.ExecuteAsync(It.IsAny<ListSalesByFarmerQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(sales);
 
         var controller = new SaleController(
@@ -328,7 +328,7 @@ public class SaleControllerTests
         var emptySales = new List<SaleDto>();
 
         _mockListSellingsByFarmerUseCase
-            .Setup(x => x.ExecuteAsync(It.IsAny<SalesByFarmerQuery>(), It.IsAny<CancellationToken>()))
+            .Setup(x => x.ExecuteAsync(It.IsAny<ListSalesByFarmerQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(emptySales);
 
         var controller = new SaleController(
@@ -378,7 +378,7 @@ public class SaleControllerTests
         var sales = new List<SaleDto>();
 
         _mockListSellingsByFarmerUseCase
-            .Setup(x => x.ExecuteAsync(It.IsAny<SalesByFarmerQuery>(), It.IsAny<CancellationToken>()))
+            .Setup(x => x.ExecuteAsync(It.IsAny<ListSalesByFarmerQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(sales);
 
         var controller = new SaleController(
@@ -393,7 +393,7 @@ public class SaleControllerTests
         // Assert
         _mockListSellingsByFarmerUseCase.Verify(
             x => x.ExecuteAsync(
-                It.Is<SalesByFarmerQuery>(q => q.FarmerCode == farmerCode),
+                It.Is<ListSalesByFarmerQuery>(q => q.FarmerCode == farmerCode),
                 It.IsAny<CancellationToken>()),
             Times.Once);
     }
@@ -418,7 +418,7 @@ public class SaleControllerTests
         };
 
         _mockListSellingsByFarmerUseCase
-            .Setup(x => x.ExecuteAsync(It.IsAny<SalesByFarmerQuery>(), It.IsAny<CancellationToken>()))
+            .Setup(x => x.ExecuteAsync(It.IsAny<ListSalesByFarmerQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(sales);
 
         var controller = new SaleController(
@@ -454,7 +454,7 @@ public class SaleControllerTests
         };
 
         _mockListSellingsByFarmerUseCase
-            .Setup(x => x.ExecuteAsync(It.IsAny<SalesByFarmerQuery>(), It.IsAny<CancellationToken>()))
+            .Setup(x => x.ExecuteAsync(It.IsAny<ListSalesByFarmerQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(sales);
 
         var controller = new SaleController(

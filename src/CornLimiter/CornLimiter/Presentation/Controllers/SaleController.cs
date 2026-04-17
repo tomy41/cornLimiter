@@ -14,14 +14,14 @@ namespace CornLimiter.Presentation.Controllers;
 [ApiController]
 [Route("v{version:apiVersion}/[controller]")]
 public class SaleController(ISellOneUseCase sellOneUseCase,
-    IListSellingsByFarmerUseCase listSellingsByFarmerUseCase,
+    IListSalesByFarmerUseCase listSellingsByFarmerUseCase,
     SellOneCommandValidator sellOneCommandValidator,
-    SalesByFarmerQueryValidator salesByFarmerQueryValidator) : ControllerBase
+    ListSalesByFarmerQueryValidator salesByFarmerQueryValidator) : ControllerBase
 {
     private readonly ISellOneUseCase _sellOneUseCase = sellOneUseCase ?? throw new ArgumentNullException(nameof(sellOneUseCase));
-    private readonly IListSellingsByFarmerUseCase _listSellingsByFarmerUseCase = listSellingsByFarmerUseCase ?? throw new ArgumentNullException(nameof(listSellingsByFarmerUseCase));
+    private readonly IListSalesByFarmerUseCase _listSellingsByFarmerUseCase = listSellingsByFarmerUseCase ?? throw new ArgumentNullException(nameof(listSellingsByFarmerUseCase));
     private readonly SellOneCommandValidator _sellOneCommandValidator = sellOneCommandValidator ?? throw new ArgumentNullException(nameof(sellOneCommandValidator));
-    private readonly SalesByFarmerQueryValidator _salesByFarmerQueryValidator = salesByFarmerQueryValidator ?? throw new ArgumentNullException(nameof(salesByFarmerQueryValidator));
+    private readonly ListSalesByFarmerQueryValidator _salesByFarmerQueryValidator = salesByFarmerQueryValidator ?? throw new ArgumentNullException(nameof(salesByFarmerQueryValidator));
 
     [MapToApiVersion(1)]
     [HttpPost("SellOne")]
@@ -50,10 +50,10 @@ public class SaleController(ISellOneUseCase sellOneUseCase,
     }
 
     [MapToApiVersion(1)]
-    [HttpGet("SalesByFarmer/{farmerCode}")]
+    [HttpGet("ListByFarmer/{farmerCode}")]
     public async Task<IActionResult> ListSalesByFarmerAsync(Guid farmerCode)
     {
-        var query = new SalesByFarmerQuery { FarmerCode = farmerCode };
+        var query = new ListSalesByFarmerQuery { FarmerCode = farmerCode };
         _salesByFarmerQueryValidator.ValidateAndThrow(query);
 
         var sales = await _listSellingsByFarmerUseCase.ExecuteAsync(query);

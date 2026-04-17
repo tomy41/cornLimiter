@@ -1,6 +1,6 @@
 ﻿namespace CornLimiter.Application.Queries;
 
-public class SalesByFarmerQuery
+public class ListSalesByFarmerQuery
 {
     public Guid FarmerCode { get; set; }
 }

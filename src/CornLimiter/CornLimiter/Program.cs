@@ -90,7 +90,7 @@ static void ConfigureValidators(WebApplicationBuilder builder)
 {
      builder.Services.AddFluentValidationAutoValidation();
     builder.Services.AddValidatorsFromAssemblyContaining<SellOneCommandValidator>();
-    builder.Services.AddValidatorsFromAssemblyContaining<SalesByFarmerQueryValidator>();
+    builder.Services.AddValidatorsFromAssemblyContaining<ListSalesByFarmerQueryValidator>();
 }
 
 static void ConfigureOptions(WebApplicationBuilder builder)
@@ -221,7 +221,7 @@ static void ConfigureRepositories(WebApplicationBuilder builder)
 static void ConfigureUseCases(WebApplicationBuilder builder)
 {
     builder.Services.AddScoped<ISellOneUseCase, SellOneUseCase>();
-    builder.Services.AddScoped<IListSellingsByFarmerUseCase, ListSellingsByFarmerUseCase>();
+    builder.Services.AddScoped<IListSalesByFarmerUseCase, ListSalesByFarmerUseCase>();
 }
 
 static void ConfigureFeaturesManager(WebApplicationBuilder builder)

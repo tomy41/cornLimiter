@@ -5,15 +5,15 @@ using FluentValidation.TestHelper;
 namespace CornLmiterTests.Application.Validators;
 
 /// <summary>
-/// Unit tests for the <see cref="SalesByFarmerQueryValidator"/> class.
+/// Unit tests for the <see cref="ListSalesByFarmerQueryValidator"/> class.
 /// </summary>
 public class SalesByFarmerQueryValidatorTests
 {
-    private readonly SalesByFarmerQueryValidator _validator;
+    private readonly ListSalesByFarmerQueryValidator _validator;
 
     public SalesByFarmerQueryValidatorTests()
     {
-        _validator = new SalesByFarmerQueryValidator();
+        _validator = new ListSalesByFarmerQueryValidator();
     }
 
     /// <summary>
@@ -23,7 +23,7 @@ public class SalesByFarmerQueryValidatorTests
     public void Validate_ValidFarmerCode_PassesValidation()
     {
         // Arrange
-        var query = new SalesByFarmerQuery
+        var query = new ListSalesByFarmerQuery
         {
             FarmerCode = Guid.NewGuid()
         };
@@ -42,7 +42,7 @@ public class SalesByFarmerQueryValidatorTests
     public void Validate_EmptyGuidFarmerCode_FailsValidation()
     {
         // Arrange
-        var query = new SalesByFarmerQuery
+        var query = new ListSalesByFarmerQuery
         {
             FarmerCode = Guid.Empty
         };
@@ -62,7 +62,7 @@ public class SalesByFarmerQueryValidatorTests
     public void Validate_DefaultFarmerCode_FailsValidation()
     {
         // Arrange
-        var query = new SalesByFarmerQuery
+        var query = new ListSalesByFarmerQuery
         {
             FarmerCode = default
         };
@@ -81,7 +81,7 @@ public class SalesByFarmerQueryValidatorTests
     public void Validate_EmptyFarmerCode_HasCorrectErrorMessage()
     {
         // Arrange
-        var query = new SalesByFarmerQuery
+        var query = new ListSalesByFarmerQuery
         {
             FarmerCode = Guid.Empty
         };
@@ -101,7 +101,7 @@ public class SalesByFarmerQueryValidatorTests
     public void Validate_EmptyFarmerCode_FailsNotEmptyRule()
     {
         // Arrange
-        var query = new SalesByFarmerQuery
+        var query = new ListSalesByFarmerQuery
         {
             FarmerCode = Guid.Empty
         };

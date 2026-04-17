@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace CornLimiter.Application.Validators;
 
-public class SalesByFarmerQueryValidator : AbstractValidator<SalesByFarmerQuery>
+public class ListSalesByFarmerQueryValidator : AbstractValidator<ListSalesByFarmerQuery>
 {
-    public SalesByFarmerQueryValidator()
+    public ListSalesByFarmerQueryValidator()
     {
         RuleFor(x => x.FarmerCode)
             .NotEmpty().WithMessage("Farmer code is required.")

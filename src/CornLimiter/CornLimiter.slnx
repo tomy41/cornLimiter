@@ -1,4 +1,8 @@
 <Solution>
   <Project Path="CornLimiter/CornLimiter.csproj" />
+  <Project Path="CornLimiterUI/cornlimiterui.client/cornlimiterui.client.esproj">
+    <Build />
+    <Deploy />
+  </Project>
   <Project Path="CornLmiterTests/CornLmiterTests.csproj" Id="8f68c39e-2db2-471d-b5f8-3ca5cb3c2355" />
 </Solution>
