@@ -7,3 +7,4 @@ src/CornLimiter/CornLimiter/Properties/launchSettings.json
 src/CornLimiter/CornLmiterTests/bin/
 src/CornLimiter/CornLmiterTests/obj/
 *.coverage
+src/CornLimiter/CornLimiterUI/cornlimiterui.client/obj/
