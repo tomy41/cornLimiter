@@ -122,81 +122,187 @@ function App() {
 
     if (isAuthenticating) {
         return (
-            <div style={{ textAlign: 'center', padding: '50px' }}>
-                <h2>Authenticating...</h2>
-                <p>Please wait while we connect to the server.</p>
+            <div className="container">
+                <div className="row justify-content-center align-items-center min-vh-100">
+                    <div className="col-md-6 text-center">
+                        <div className="spinner-border text-primary mb-3" role="status" style={{ width: '3rem', height: '3rem' }}>
+                            <span className="visually-hidden">Loading...</span>
+                        </div>
+                        <h2 className="mb-3">Authenticating...</h2>
+                        <p className="text-muted">Please wait while we connect to the server.</p>
+                    </div>
+                </div>
             </div>
         );
     }
 
     if (!token) {
         return (
-            <div style={{ textAlign: 'center', padding: '50px' }}>
-                <h2>Authentication Failed</h2>
-                <p style={{ color: 'red' }}>{error || 'Unable to authenticate'}</p>
-                <button 
-                    onClick={initializeAuth} 
-                    className="btn btn-primary"
-                    style={{ marginTop: '20px' }}
-                >
-                    Retry
-                </button>
+            <div className="container">
+                <div className="row justify-content-center align-items-center min-vh-100">
+                    <div className="col-md-6">
+                        <div className="card shadow-lg">
+                            <div className="card-body text-center p-5">
+                                <i className="bi bi-exclamation-triangle text-danger" style={{ fontSize: '4rem' }}></i>
+                                <h2 className="card-title mt-3 mb-3">Authentication Failed</h2>
+                                <div className="alert alert-danger" role="alert">
+                                    {error || 'Unable to authenticate'}
+                                </div>
+                                <button 
+                                    onClick={initializeAuth} 
+                                    className="btn btn-primary btn-lg"
+                                >
+                                    <i className="bi bi-arrow-clockwise me-2"></i>
+                                    Retry
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         );
     }
 
     const salesContents = sales === undefined
-        ? <p>Sales loading...</p>
-        : <div>
-            <table className="table table-striped">
-                <tbody>
-                    <tr>
-                        <td>Total count</td>
-                        <td>{salesCount}</td>
-                    </tr>
-                    <tr>
-                        <td>Latest sale on</td>
-                        <td>{latestSale}</td>
-                    </tr>
-                </tbody>
-            </table>
-            <p>Sales History</p>
-            <table className="table table-striped" aria-labelledby="tableLabel">
-                <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {sales.map(sale =>
-                        <tr key={sale.id}>
-                            <td>{sale.id}</td>
-                            <td>{sale.soldOnUtc}</td>
-                        </tr>
-                    )}
-                </tbody>
-            </table>
-        </div>;
+        ? (
+            <div className="text-center py-5">
+                <div className="spinner-border text-primary" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                </div>
+                <p className="mt-3 text-muted">Loading sales data...</p>
+            </div>
+        )
+        : (
+            <div className="row">
+                <div className="col-12">
+                    <div className="card shadow-sm mb-4">
+                        <div className="card-header bg-primary text-white">
+                            <h5 className="mb-0">
+                                <i className="bi bi-graph-up me-2"></i>
+                                Sales Summary
+                            </h5>
+                        </div>
+                        <div className="card-body">
+                            <div className="row text-center">
+                                <div className="col-md-6 mb-3 mb-md-0">
+                                    <div className="border-end">
+                                        <h6 className="text-muted">Total Sales</h6>
+                                        <h2 className="text-primary">{salesCount}</h2>
+                                    </div>
+                                </div>
+                                <div className="col-md-6">
+                                    <h6 className="text-muted">Latest Sale</h6>
+                                    <h5 className="text-success">
+                                        {latestSale ? new Date(latestSale).toLocaleString() : 'N/A'}
+                                    </h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="card shadow-sm">
+                        <div className="card-header bg-success text-white">
+                            <h5 className="mb-0">
+                                <i className="bi bi-clock-history me-2"></i>
+                                Sales History
+                            </h5>
+                        </div>
+                        <div className="card-body p-0">
+                            {sales.length === 0 ? (
+                                <div className="text-center py-5">
+                                    <i className="bi bi-inbox text-muted" style={{ fontSize: '3rem' }}></i>
+                                    <p className="text-muted mt-3">No sales recorded yet</p>
+                                </div>
+                            ) : (
+                                <div className="table-responsive">
+                                    <table className="table table-hover table-striped mb-0">
+                                        <thead className="table-light">
+                                            <tr>
+                                                <th scope="col" className="text-center">#</th>
+                                                <th scope="col">Sale ID</th>
+                                                <th scope="col">Date & Time</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {sales.map((sale, index) =>
+                                                <tr key={sale.id}>
+                                                    <td className="text-center">{index + 1}</td>
+                                                    <td>
+                                                        <span className="badge bg-info">{sale.id}</span>
+                                                    </td>
+                                                    <td>
+                                                        <i className="bi bi-calendar-event me-2"></i>
+                                                        {new Date(sale.soldOnUtc).toLocaleString()}
+                                                    </td>
+                                                </tr>
+                                            )}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
 
     return (
-        <div>
-            <h1 id="tableLabel">Farmers corn sales</h1>
-            <div style={{ marginBottom: '20px' }}>
-                <button 
-                    onClick={handleBuyOne} 
-                    disabled={isLoading}
-                    className="btn btn-primary"
-                >
-                    {isLoading ? 'Processing...' : 'Buy one'}
-                </button>
+        <div className="min-vh-100 bg-light">
+            <nav className="navbar navbar-dark bg-dark shadow-sm mb-4">
+                <div className="container">
+                    <span className="navbar-brand mb-0 h1">
+                        <i className="bi bi-shop me-2"></i>
+                        Corn Farmers Sales
+                    </span>
+                    <span className="badge bg-success">Connected</span>
+                </div>
+            </nav>
+
+            <div className="container pb-5">
+                <div className="row mb-4">
+                    <div className="col-12">
+                        <div className="d-flex justify-content-between align-items-center">
+                            <div>
+                                <p className="text-muted mb-0">
+                                    <small>Farmer ID: {farmerCode}</small>
+                                </p>
+                            </div>
+                            <button 
+                                onClick={handleBuyOne} 
+                                disabled={isLoading}
+                                className="btn btn-success btn-lg shadow"
+                            >
+                                {isLoading ? (
+                                    <>
+                                        <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                        Processing...
+                                    </>
+                                ) : (
+                                    <>
+                                        <i className="bi bi-bag-plus me-2"></i>
+                                        Buy One
+                                    </>
+                                )}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 {error && (
-                    <div style={{ color: 'red', marginTop: '10px' }}>
-                        {error}
+                    <div className="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+                        <i className="bi bi-exclamation-circle me-2"></i>
+                        <strong>Error:</strong> {error}
+                        <button 
+                            type="button" 
+                            className="btn-close" 
+                            onClick={() => setError(null)}
+                            aria-label="Close"
+                        ></button>
                     </div>
                 )}
+
+                {salesContents}
             </div>
-            {salesContents}
         </div>
     );
 }
