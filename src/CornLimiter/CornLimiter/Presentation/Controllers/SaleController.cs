@@ -5,11 +5,12 @@ using CornLimiter.Application.Queries;
 using CornLimiter.Application.UseCases;
 using CornLimiter.Application.Validators;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CornLimiter.Presentation.Controllers;
 
-//[Authorize]
+[Authorize]
 [ApiVersion(1)]
 [ApiController]
 [Route("v{version:apiVersion}/[controller]")]

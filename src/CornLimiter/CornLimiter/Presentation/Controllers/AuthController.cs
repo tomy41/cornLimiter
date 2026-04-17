@@ -8,7 +8,7 @@ using System.Text;
 
 namespace CornLimiter.Presentation.Controllers;
 
-[Route("api/[controller]")]
+[Route("[controller]")]
 [ApiController]
 public class AuthController(IOptions<JwtTokenOptions> options) : ControllerBase
 {
